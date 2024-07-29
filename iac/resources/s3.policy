@@ -1,0 +1,28 @@
+Define the username.
+Syntax (dot notation): <client>.<environment> (
+Example:  kpmg-ireland.production
+
+Define the home directory. Separate, segregated directory per client per environment.
+
+Syntax: /mastercard-<environment>-<internal/external>-<clientname>-reports/<clientname>
+Example: /mastercard-production-external-finance-charis-reports/charis
+
+Define separate roles/policy for each environment.
+
+Syntax: mastercard-<clientname>-transfer-family-s3-access-role-<environment>
+Example: mastercard-kpmgireland-transfer-family-s3-access-role-production 
+
+Get public key from the client. Separate keys for each environment
+
+If keys generated on windows OS, mastercard need to convert the client public key to openSSH
+--------------------------------------------------------------------------
+
+1. Create subdirectories called "archived" and "errors" under the 3 directories (customers, employees, transactions) for each environment
+2. Amend the customer codes ingestion job so that if a customers file is processed successfully, it is moved to the customers/archived subdirectory; if an error occurs it is moved to the customers/errors subdirectory
+3. Amend the employees ingestion job so that if a employees file is processed successfully, it is moved to the employees/archived subdirectory; if an error occurs it is moved to the employees/errors subdirectory
+4. Add a readme for each subdirectory: customers, employees and transactions
+5. Convert the attached client public key for Staging to openSSH. There will be separate keys for each environment: Prod and non-Prod (i.e. Staging)
+
+Notes
+Ensure usernames and directory follow our naming conventions
+Conor to validate Terraform script

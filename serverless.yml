@@ -1,0 +1,30 @@
+org: nghiapt1112
+app: app-demo-linhtinh
+service: serverless-sftp-aws
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  stackName: ${env:APP_NAME, "${self:service}-${self:provider.stage}"}
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION, "ap-southeast-1"}
+  stage: ${opt:stage, "dev"}
+  timeout: 30 # seconds
+  memorySize: 256
+  versionFunctions: false
+  lambdaHashingVersion: 20201221
+
+resources:
+  - ${file(./iac/resources/aws-s3.yml)}
+  - ${file(./iac/resources/aws-sftp-integration.yml)}
+  - ${file(./iac/resources/aws-sftp-user1-integration.yml)}
+  - ${file(./iac/resources/aws-sftp-user2-integration.yml)}
+#  - ${file(./iac/resources/aws-resources-roles.yml)}
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get

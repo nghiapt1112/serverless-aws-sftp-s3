@@ -1,0 +1,10 @@
+Resources:
+  SFTPDataTransferFamilyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: mastercard-${self:provider.stage}-sftp-data
+      Tags:
+        - Key: ENVIRONMENT
+          Value: ${self:provider.stage}
+        - Key: stack
+          Value: ingestion

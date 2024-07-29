@@ -1,0 +1,60 @@
+Resources:
+  SFTPUser1:
+    Type: AWS::Transfer::User
+    DependsOn:
+      - SFTPUser1AccessRole
+    Properties:
+      UserName: mastercard.integration
+      ServerId: s-714daa9a61934c658
+      HomeDirectory: /mastercard-${self:provider.stage}-sftp-data/mastercard.integration
+      SshPublicKeys:
+        - ${ssm:/mastercard-ingestion/integration/sftp/ssh/public_main}
+      Role: arn:aws:iam::712963084888:role/SFTPUser1AccessRole
+      Tags:
+        - Key: ENVIRONMENT
+          Value: ${self:provider.stage}
+        - Key: stack
+          Value: ingestion
+  SFTPUser1AccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: IAM role to allow KMPG access SFTP S3 bucket
+      RoleName: SFTPUser1AccessRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - s3.amazonaws.com
+                - transfer.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: SFTPUser1AccessPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Sid: 'DirectoryAccess'
+                Action:
+                  - 's3:ListBucket'
+                  - 's3:GetBucketLocation'
+                Resource:
+                  - 'arn:aws:s3:::mastercard-${self:provider.stage}-sftp-data'
+                  - 'arn:aws:s3:::mastercard-${self:provider.stage}-sftp-data/mastercard.integration/*'
+                  - 'arn:aws:s3:::mastercard-${self:provider.stage}-sftp-data/public/*'
+              - Effect: Allow
+                Sid: 'UserFolderAccess'
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:DeleteObject'
+                Resource:
+                  - 'arn:aws:s3:::mastercard-${self:provider.stage}-sftp-data/mastercard.integration*'
+                  - 'arn:aws:s3:::mastercard-${self:provider.stage}-sftp-data/public*'
+      Tags:
+        - Key: ENVIRONMENT
+          Value: ${self:provider.stage}
+        - Key: stack
+          Value: ingestion

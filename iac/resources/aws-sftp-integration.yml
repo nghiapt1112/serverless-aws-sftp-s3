@@ -1,0 +1,14 @@
+Resources:
+  SFTPServer:
+    Type: AWS::Transfer::Server
+    Properties:
+      IdentityProviderType: SERVICE_MANAGED
+      EndpointType: PUBLIC
+      LoggingRole: arn:aws:iam::712963084888:role/TransferLoggingRole
+#  Outputs:
+#    SFTPServerEndpoint:
+#      Description: "SFTP Server Endpoint"
+#      Value:
+#        Fn::GetAtt:
+#          - SFTPServer
+#          - Endpoint asdfghjkl/m
